@@ -1,0 +1,21 @@
+{
+    "production": {
+        "_1s2u": {
+            "username": "kinason42",
+            "password": "web54126",
+            "url": "https://1s2u.com/sms/sendsms/sendsms.asp",
+            "email": "",
+            "sender": "ProxiRental"
+        }
+    }, 
+
+    "development": {
+        "_1s2u": {
+            "username": "kinason42",
+            "password": "web54126",
+            "url": "https://1s2u.com/sms/sendsms/sendsms.asp",
+            "email": "",
+            "sender": "ProxiRental"
+        }
+    }
+}
