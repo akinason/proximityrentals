@@ -5,7 +5,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '5$+hqvk%k^*id42fi62g%@)(24%tr3c!4i@x@edbz2a-#f$jeg'
 
-ALLOWED_HOSTS = ['localhots', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -18,6 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'main.apps.MainConfig',
+    'sms.apps.SmsConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

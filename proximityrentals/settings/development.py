@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = False
+DEBUG = True
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -23,3 +23,7 @@ DATABASES = {
 
 STATIC_URL = '/static/'
 
+# SMS configuration
+ONE_S_2_U_SEND_URL = "https://1s2u.com/sms/sendsms/sendsms.asp"
+ONE_S_2_U_PASSWORD = "web54126"
+ONE_S_2_U_USERNAME = "kinason42"
