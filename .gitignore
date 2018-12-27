@@ -3,3 +3,5 @@ venv/
 *.pyc
 environment.py
 .idea/
+media/
+.gitignore
