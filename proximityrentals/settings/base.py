@@ -76,12 +76,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-}
-
 AUTHENTICATION_BACKENDS = (
     'main.auth_backends.EmailAuthenticationBackend', 'main.auth_backends.PhoneAuthenticationBackend',
     'rest_framework.authentication.TokenAuthentication', 'django.contrib.auth.backends.ModelBackend',
