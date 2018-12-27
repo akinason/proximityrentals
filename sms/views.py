@@ -17,10 +17,10 @@ class SmsList(generics.GenericAPIView):
     serializer_class = SmsSerializer
     queryset = SmsLog.objects.all()
 
-    # def get(self, request, format=None):
-    #     smss = SmsLog.objects.all()
-    #     serializer = SmsSerializer(smss, many=True)
-    #     return Response(serializer.data)
+    def get(self, request, format=None):
+        data = SmsLog.objects.all()
+        serializer = SmsSerializer(data, many=True)
+        return Response(serializer.data)
 
     def post(self, request, format=None):
         serializer = SmsSerializer(data=request.data)
@@ -35,13 +35,23 @@ class SmsDetail(APIView):
     Retrieve a single SMS
     """
 
-    def get_object(self, pk):
+    def get_object(self):
+        id = self.request.query_params.get('id')
+
+        # Try converting to integer to be sure a str was not sent by the user.
         try:
-            return SmsLog.objects.get(pk=pk)
-        except SmsLog.DoesNotExist:
+            id = int(id)
+        except Exception:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        sms = self.get_object(pk)
+        try:
+            return SmsLog.objects.get(pk=id)
+        except SmsLog.DoesNotExist:
+            raise Http404
+        except Exception:
+            raise Http404
+
+    def get(self, request, format=None):
+        sms = self.get_object()
         serializer = SmsSerializer(sms)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -20,6 +20,8 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'sms.apps.SmsConfig',
     'rest_framework',
+    'storages',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +75,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
+AUTHENTICATION_BACKENDS = (
+    'main.auth_backends.EmailAuthenticationBackend', 'main.auth_backends.PhoneAuthenticationBackend',
+    'rest_framework.authentication.TokenAuthentication', 'django.contrib.auth.backends.ModelBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/

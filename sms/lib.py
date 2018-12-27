@@ -26,7 +26,6 @@ def send_1s2u_sms(number, message, sender=None):
         'username': username, 'password': password, 'msg': msg, 
         'Sid': sid, 'fl': fl, 'mt': mt, 'ipcl': ipcl, 'mno': mno
     }
-    print(params)
     encoded_params = urlencode(params)
     try:
         response = requests.get(url=url, params=encoded_params)
@@ -46,6 +45,6 @@ def send_1s2u_sms(number, message, sender=None):
 
 
 def format_number(number):
-    # Formats the number following international standards.
+    # Formats the number following international standards. Returns a valid phone number or None
 
     return number

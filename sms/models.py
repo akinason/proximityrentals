@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
-from globals import SMS_STATUS_SUBMITTED, DEFAULT_SMS_SENDER
+from globals import SMS_STATUS_SUBMITTED, DEFAULT_SMS_SENDER, SMS_STATUS_INVALID_SMS
 
 
 class SmsLog(models.Model):
@@ -25,3 +25,12 @@ class SmsManager:
         self.sender = sender if sender else DEFAULT_SMS_SENDER
         return self.model.objects.create(sender=self.sender, number=number, message=message)
 
+    def check_internal_status(pk):
+        # returns the status of the sms with the given pk, does not do an external check with 3rd party.
+        # param: pk = Primary key in SmsLog Model.
+
+        try:
+            message = SmsLog.objects.get(pk=pk)
+            return message.status
+        except SmsLog.DoesNotExist:
+            return SMS_STATUS_INVALID_SMS
