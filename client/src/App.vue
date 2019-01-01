@@ -25,13 +25,14 @@ export default {
   --primary: #744e64;
   --white: #ffffff;
   --bg: #f2f2f2;
+  --gray: #555555;
 }
 
 body {
   background: var(--bg);
+  color: var(--text_color);
 }
 #app {
-  font-family: "Titillium Web";
-  color: #2c3e50;
+  font-family: "Titillium Web", sans-serif;
 }
 </style>

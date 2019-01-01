@@ -7,11 +7,18 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
-    path: '/signup',
-    name: 'signup',
-    // route level code-splitting
-    // this generates a separate chunk (signup.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import( /* webpackChunkName: "signup" */ './views/Signup.vue')
-  }]
+      path: '/signup',
+      name: 'signup',
+      // route level code-splitting
+      // this generates a separate chunk (signup.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import( /* webpackChunkName: "signup" */ './views/Signup.vue')
+    },
+    {
+      path: '/signup/confirmation_email',
+      name: 'confirm_email',
+      props: true,
+      component: () => import('./views/Confirm_email.vue')
+    }
+  ]
 })

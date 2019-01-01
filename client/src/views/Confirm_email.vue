@@ -4,24 +4,17 @@
       <br>
       {{ shop_title }}
     </h3>
-    <p>signup to get started</p>
-    <form @submit.prevent="confirmEmail">
-      <input type="text" name="f_name" id="f_name" v-model="user.f_name" placeholder="First Name">
-      <input type="text" name="l_name" id="l_name" v-model="user.l_name" placeholder="Last Name">
-      <input type="email" name="email" id="eamil" v-model="user.email" placeholder="Email Address">
-      <input type="text" name="number" id="number" v-model="user.phone" placeholder="Phone Number">
+    <p>confirm email address</p>
+    <p class="email">{{ this.email }}</p>
+    <form action method="post">
       <input
-        type="password"
-        name="password"
-        id="password"
-        v-model="user.password"
-        placeholder="Password"
+        type="text"
+        name="conf_email"
+        id="conf_email"
+        v-model="user.confirm_email"
+        placeholder="Enter Code"
       >
-      <span class="btn-show-pass">
-        <i class="fas fa-eye"></i>
-      </span>
-      <p v-if="feedback" class="red-text">{{ feedback }}</p>
-      <input type="submit" value="submit">
+      <input type="submit" value="verify">
       <p>
         Already have an account?
         <strong>
@@ -34,37 +27,15 @@
 
 <script>
 export default {
-  name: "register",
+  props: ["email"],
+  name: "confirm_email",
   data() {
     return {
       user: {
-        f_name: "vegas",
-        l_name: "vegas",
-        email: "vegas@vegas.com",
-        phone: "vegas",
-        password: "vegas"
+        conf_email: ""
       },
-      shop_title: "proximity rentals",
-      feedback: null
+      shop_title: "proximity rentals"
     };
-  },
-  methods: {
-    confirmEmail() {
-      if (
-        this.user.f_name &&
-        this.user.l_name &&
-        this.user.email &&
-        this.user.phone &&
-        this.user.password
-      ) {
-        this.$router.push({
-          name: "confirm_email",
-          params: { email: this.email }
-        });
-      } else {
-        this.feedback = "Invalid credentials";
-      }
-    }
   }
 };
 </script>
@@ -148,11 +119,9 @@ form p a {
   text-transform: capitalize;
   color: #3339;
 }
-form .red-text {
-  display: block;
-  margin: 1rem 0 0;
-  color: rgb(177, 9, 9);
-  font-size: 20px;
+
+.email {
+  all: initial;
 }
 
 /* media query */

@@ -9,12 +9,22 @@
           <div class="logo_img">
             <img src="@/assets/logo.png" alt="proximity_rentals">
           </div>
-          <p>Proximity Rentals</p>
+          <p>{{ title }}</p>
         </div>
       </section>
     </header>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      title: "Proximity Rentals"
+    };
+  }
+};
+</script>
 
 <style>
 * {
@@ -65,5 +75,15 @@ header section#one .logo p {
   position: absolute;
   right: 0;
   top: 6px;
+}
+/* media query */
+
+@media only screen and (max-width: 297px) {
+  header section#one .logo {
+    width: 100%;
+  }
+  header section#one p {
+    left: 100%;
+  }
 }
 </style>
