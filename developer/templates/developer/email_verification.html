@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+<body>
+    <form action="{% url 'developer:email_verification' %}" method="POST">
+        {% csrf_token %}
+        <label for='id_code'>Enter Code Here</label>
+        <input type="text" name="code" id='id_code'>
+        <input class="btn btn-primary btn-pill d-flex ml-auto mr-auto" type="submit" value="submit">
+    </form>
+</body>
+    
+</html>

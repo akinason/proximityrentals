@@ -24,6 +24,8 @@ class User(AbstractUser):
 
     is_deleted = models.BooleanField(default=False)
     code = models.CharField(max_length=20, blank=True, verbose_name='password_reset_code')
+    phone_verification_code = models.CharField(max_length=20, blank=True, verbose_name='phone_verification_code')
+    email_verification_code = models.CharField(max_length=20, blank=True, verbose_name='email_verification_code')
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'

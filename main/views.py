@@ -1,4 +1,4 @@
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.http import Http404
 from django.views import generic as generic_views
 
@@ -12,6 +12,7 @@ from main import serializers
 from main.models import User, manager as user_manager
 from main.permissions import IsUserOrReadOnly
 from sms.models import SmsManager
+from proximityrentals import settings
 
 
 sms_manager = SmsManager()
@@ -199,23 +200,24 @@ class PasswordReset(APIView):
                 {'verified': 'phone number and email are not verified'}, status=status.HTTP_404_NOT_FOUND
             )
 
-        code = user_manager.make_random_password(length=5, allowed_chars='23456789')
+        code = user_manager.make_random_password(length=5, allowed_chars='123456789')
         user.code = code  # store the code to be used during the next api request for verification
         user.save()
         message = 'Your Password Reset Code \n%s' % code
         if user.verified_phone:
-            sms_manager.send(user.verified_phone, message)
+            # sms_manager.send(user.verified_phone, message)
+            pass
 
         if user.verified_email:
-            send_mail(
+            email = EmailMessage(
                 subject='Your Password Reset Code',
-                message='This is your password reset code. <br> <h1>%s</h1> ' % code,
-                from_email='proximityrentals@gmail.com',
-                recipient_list=[user.verified_email],
-                html_message='This is your password reset code. <br> <h1>%s</h1> ' % code,
+                body='This is your password reset code. %s ' % code,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[user.verified_email],
+                # html_message='This is your password reset code. <br> <h1>%s</h1> ' % code,
             )
-
-        return Response({'id': user.id}, status=status.HTTP_200_OK)
+            email.send()
+        return Response({'id': user.id }, status=status.HTTP_200_OK)
 
 
 class PasswordResetVerifyCode(APIView):
@@ -226,8 +228,8 @@ class PasswordResetVerifyCode(APIView):
     def get(self, request, *args, **kwargs):
         id = request.query_params.get('id')
         code = request.query_params.get('code')
-
-        if User.objects.filter(is_deleted=False, pk=id, code=code).exists():
+        
+        if code and User.objects.filter(is_deleted=False, pk=id, code=code).exists():
             return Response(True, status=status.HTTP_200_OK)
 
         return Response(False, status=status.HTTP_404_NOT_FOUND)
@@ -254,3 +256,59 @@ class PasswordResetConfirm(APIView):
                 return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(False, status=status.HTTP_400_BAD_REQUEST)
 
+
+class PhoneAndEmailVerification(APIView):
+    """
+    Generates a 5 digit code used for Email or Phone Verification.
+    """
+    def post(self, request, *args, **kwargs):
+        username = request.POST.get('username')
+        user = user_manager.get_user(username)
+        code = user_manager.make_random_password(length=5, allowed_chars='123456789')
+        if str(user.email) == str(username): #  Send a verification code for email verification.
+            email = EmailMessage(
+                subject='Email Verification Code',
+                body='This is your email verification code: <br> <h1>%s</h1> ' % code,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[user.email],
+                # html_message='This is your email verification code. <br> <h1>%s</h1> ' % code,
+            )
+            email.send()
+            user.email_verifiation_code = code 
+            user.save()
+            return Response({'id': user.pk }, status=status.HTTP_200_OK)
+
+        if str(user.phone) == str(username):
+            message = 'Please enter this code to verify your phone number: %s' % code 
+            # sms_manager.send(user.phone, message)
+            user.phone_verification_code = code 
+            user.save()
+            return Response({'id': user.pk }, status=status.HTTP_200_OK)
+
+        return Response({'error': 'Invalid Phone or Email'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class PhoneAndEmailVerificationConfirm(APIView):
+    """
+    Check if the verification code provided matches that in the system and mark the 
+    email or phone number as verified.
+    """
+
+    def post(self, request, *args, **kwargs):
+        id = request.POST.get('id')
+        code = request.POST.get('code')
+        if User.objects.filter(id=id).exists() and code:
+            user = User.objects.get(id=id)
+            if str(user.email_verification_code) == str(code):
+                user.verified_email = user.email
+                user.email_verification_code = '' 
+                user.save()
+                return Response(True, status=status.HTTP_200_OK)
+            
+            if str(user.phone_verification_code) == str(code):
+                user.verified_phone = user.phone 
+                user.phone_verification_code = ''
+                user.save()
+                return Response(True, status=status.HTTP_200_OK)
+        
+        return Response(False, status=status.HTTP_404_NOT_FOUND)

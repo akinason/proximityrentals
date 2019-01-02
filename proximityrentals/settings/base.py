@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'storages',
     'rest_framework.authtoken',
+    'developer.apps.DeveloperConfig',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +82,7 @@ AUTHENTICATION_BACKENDS = (
     'rest_framework.authentication.TokenAuthentication', 'django.contrib.auth.backends.ModelBackend',
 )
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -136,7 +138,7 @@ AWS_DEFAULT_ACL = 'public-read'
 DEFAULT_FROM_EMAIL = 'proximityrentals@gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'proximityrentals@gmail.com'
+EMAIL_HOST_USER = 'njanginetwork@gmail.com'
 EMAIL_HOST_PASSWORD = 'scoolings245'
 EMAIL_PORT = 587
 

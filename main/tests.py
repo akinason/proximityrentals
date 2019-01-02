@@ -5,6 +5,7 @@ from main.models import User, UserManager
 
 user_manager = UserManager()
 
+
 class CreateUserTest(APITestCase):
     def test_create_useraccount_with_phone_and_password(self):
         """
@@ -233,6 +234,7 @@ class UserLoginTest(APITestCase):
         res = self.client.post(reverse('main:login'), {'username': user.username, 'password': '123456789A'})
         
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn('user', res.data)
 
     def test_can_login_with_phone_and_password(self):
         """
@@ -242,6 +244,7 @@ class UserLoginTest(APITestCase):
         res = self.client.post(reverse('main:login'), {'username': user.phone, 'password': '123456789A'})
         
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn('user', res.data)
 
     def test_can_login_with_email_and_password(self):
             """
@@ -251,11 +254,13 @@ class UserLoginTest(APITestCase):
             res = self.client.post(reverse('main:login'), {'username': user.email, 'password': '123456789A'})
             
             self.assertEqual(res.status_code, status.HTTP_200_OK)
+            self.assertIn('user', res.data)
 
 
 class PasswordResetTest(APITestCase):
 
     def setUp(self):
+        
         users = [
             {'first_name': 'awa', 'last_name': 'kinason', 'phone': '237675397307', 'password': '123456789A', 'email': 'kinason42@gmail.com'},
             {'first_name': 'bih', 'email': 'bih@example.com', 'password': '123456789A'},
@@ -266,7 +271,9 @@ class PasswordResetTest(APITestCase):
             res = self.client.post(reverse('main:users'), data=data)
         
         self.user = User.objects.order_by('id')[:1].get()
-        self.code = None
+        self.code = user_manager.make_random_password(length=5, allowed_chars='123456789')
+        self.user.code = self.code 
+        self.user.save()
         return super(PasswordResetTest, self).setUp()
 
     def test_can_receive_password_reset_OTP(self):
@@ -283,31 +290,89 @@ class PasswordResetTest(APITestCase):
         res = self.client.post(reverse('main:password_reset'), {'username': self.user.phone})
         # username kwarg can be 'user.phone' or 'user.email' or 'user.username'
 
-        # response is in the format {'id': user.pk}, s
+        # response is in the format {'id': user.pk}, since we do not have access to the code that was sent by SMS or Email to the user, 
+        # we are going to read that value from the user instance. First we need to reload the user instance.
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data['id'], self.user.pk)
 
     def test_code_sent_to_user_exists(self):
         """
         Ensures frontend applications can test if the code entered by the user is correct.
-        Since we do not have access to the code that was sent by SMS or Email to the user,we are going to create a
-        new code, and check using the API and see if we get a TRUE
         """
-        self.user.code = user_manager.make_random_password(length=5, allowed_chars='23456789')
-        self.user.save()
-        res = self.client.get(reverse('main:verify_reset_code'), {'code': self.user.code, 'id': self.user.pk})
+        user = User.objects.get(pk=self.user.pk)
+
+        res = self.client.get(reverse('main:verify_reset_code'), {'code': user.code, 'id': self.user.pk})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, True)
 
-    def test_password_reset_confirmation(self):
+    def test_password_reset_confirm_with_correct_params(self):
         """
-        Ensures we can successfully reset a user's password after valid code has been received by the server.
-        This method returns a user token and a user instance. {'token': "", 'user': ""}
+        Ensures we get a token and user instance as response after submitting an id and code.
+
+        Since we do not have access to the code sent to the user, we will read it from the user instance.
         """
-        self.user.code = user_manager.make_random_password(length=5, allowed_chars='23456789')
-        self.user.save()
-        data = {'id': self.user.pk, 'code': self.user.code, 'password': '123456789M'}
-        res = self.client.put(reverse('main:password_reset_confirm'), data=data)
+        user = User.objects.get(pk=self.user.pk)  #  First we refresh the user from db. self.user.refresh_from_db() does not do the job.
+
+        res = self.client.put(reverse('main:password_reset_confirm'), data={'id': user.id, 'code': user.code})
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(res.data['user']['id'], self.user.id)
+        self.assertIn('token', res.data)
+        self.assertIn('user', res.data)
+
+class EmailAndPhoneVerificationTest(APITestCase):
+
+    def setUp(self):
+        users = [
+            {'first_name': 'awa', 'last_name': 'kinason', 'phone': '237675397307', 'password': '123456789A', 'email': 'kinason42@gmail.com'},
+            {'first_name': 'bih', 'email': 'bih@example.com', 'password': '123456789A'},
+            {'first_name': 'ngwi', 'last_name': 'simon', 'email': 'simon@gmail.com', 'phone': '237655916762', 'password': '123456789A'}
+        ]
+
+        for data in users:
+            res = self.client.post(reverse('main:users'), data=data)
+        
+        self.user = User.objects.order_by('id')[:1].get()
+        self.user.email_verification_code = user_manager.make_random_password(length=5, allowed_chars='123456789')
+        self.user.phone_verification_code = user_manager.make_random_password(length=5, allowed_chars='123456789')
+        self.user.save()
+        return super(EmailAndPhoneVerificationTest, self).setUp()
+    
+    def test_can_send_email_verification_code(self):
+        """
+        Ensures we can verify a user's email address.
+        """
+        params = {'username': self.user.email}
+        res = self.client.post(reverse('main:verification'), data=params)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, {'id': self.user.id})
+
+    def test_can_send_phone_verification_code(self):
+        """
+        Ensures we can verify a user's email address.
+        """
+        params = {'username': self.user.phone}
+        res = self.client.post(reverse('main:verification'), data=params)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, {'id': self.user.id})
+    
+    def test_can_confirm_email_verification_code_already_sent(self):
+        """
+        Ensures that we can confirm phone or email verification codes. 
+        """
+        res = self.client.post(reverse('main:confirm_verification'), data={'id': self.user.id, 'code': self.user.email_verification_code})
+        user = User.objects.get(pk=self.user.pk)
+
+        self.assertEqual(res.data, True)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(user.verified_email, self.user.email)
+
+    def test_can_confirm_phone_verification_code_already_sent(self):
+        """
+        Ensures that we can confirm phone or email verification codes. 
+        """
+        res = self.client.post(reverse('main:confirm_verification'), data={'id': self.user.id, 'code': self.user.phone_verification_code})
+        user = User.objects.get(pk=self.user.pk)
+        
+        self.assertEqual(res.data, True)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(user.verified_phone, self.user.phone)
+        

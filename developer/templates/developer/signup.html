@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+<body>
+    <form action="{% url 'developer:signup' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn btn-primary btn-pill d-flex ml-auto mr-auto" type="submit" value="submit">
+    </form>
+</body>
+    
+</html>

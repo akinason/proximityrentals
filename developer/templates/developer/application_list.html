@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+<body>
+    {% for app in apps %}
+    <p>Name: {{ app.name }}</p>
+    <p>Key: {{ app.key }}</p>
+    <p>Secret: {{ app.secret }}</p>
+    <p>Creation Date: {{ app.created_on }}</p>
+    <p>Active: {{ app.is_active }}</p>
+    <hr>
+    {% endfor %}
+
+</body>
+    
+</html>
