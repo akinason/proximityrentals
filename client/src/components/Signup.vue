@@ -2,20 +2,45 @@
   <div class="signup">
     <h3>welcome to
       <br>
-      {{ shop_title }}
+      {{ this.title }}
     </h3>
     <p>signup to get started</p>
-    <form @submit.prevent="confirmEmail">
-      <input type="text" name="f_name" id="f_name" v-model="user.f_name" placeholder="First Name">
-      <input type="text" name="l_name" id="l_name" v-model="user.l_name" placeholder="Last Name">
-      <input type="email" name="email" id="eamil" v-model="user.email" placeholder="Email Address">
-      <input type="text" name="number" id="number" v-model="user.phone" placeholder="Phone Number">
+    <form autocomplete="off">
+      <input
+        type="text"
+        name="f_name"
+        id="f_name"
+        placeholder="First Name"
+        v-model="this.user.f_name"
+      >
+      <input
+        type="text"
+        name="l_name"
+        id="l_name"
+        v-model="this.user.l_name"
+        placeholder="Last Name"
+      >
+      <input
+        type="email"
+        name="email"
+        id="eamil"
+        v-model="this.user.email"
+        placeholder="Email Address"
+      >
+      <input
+        type="text"
+        name="number"
+        id="number"
+        v-model="this.user.phone"
+        placeholder="Phone Number"
+      >
       <input
         type="password"
         name="password"
         id="password"
-        v-model="user.password"
+        v-model="this.user.password"
         placeholder="Password"
+        autocomplete="new-password"
       >
       <span class="btn-show-pass">
         <i class="fas fa-eye"></i>
@@ -33,37 +58,23 @@
 </template>
 
 <script>
+// import { mapGetters } from "vuex";
 export default {
   name: "register",
   data() {
     return {
-      user: {
-        f_name: "vegas",
-        l_name: "vegas",
-        email: "vegas@vegas.com",
-        phone: "vegas",
-        password: "vegas"
-      },
-      shop_title: "proximity rentals",
       feedback: null
     };
   },
-  methods: {
-    confirmEmail() {
-      if (
-        this.user.f_name &&
-        this.user.l_name &&
-        this.user.email &&
-        this.user.phone &&
-        this.user.password
-      ) {
-        this.$router.push({
-          name: "confirm_email",
-          params: { email: this.email }
-        });
-      } else {
-        this.feedback = "Invalid credentials";
+  methods: {},
+  computed: {
+    user: {
+      get() {
+        return this.$store.getters.user;
       }
+    },
+    title() {
+      return this.$store.getters.title;
     }
   }
 };

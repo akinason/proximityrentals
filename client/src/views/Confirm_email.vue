@@ -2,7 +2,7 @@
   <div class="signup">
     <h3>welcome to
       <br>
-      {{ shop_title }}
+      {{ this.title }}
     </h3>
     <p>confirm email address</p>
     <p class="email">{{ this.email }}</p>
@@ -11,7 +11,7 @@
         type="text"
         name="conf_email"
         id="conf_email"
-        v-model="user.confirm_email"
+        v-model="confirm_email"
         placeholder="Enter Code"
       >
       <input type="submit" value="verify">
@@ -27,15 +27,19 @@
 
 <script>
 export default {
-  props: ["email"],
   name: "confirm_email",
   data() {
     return {
-      user: {
-        conf_email: ""
-      },
-      shop_title: "proximity rentals"
+      confirm_email: null
     };
+  },
+  computed: {
+    email() {
+      return this.$store.getters.user.email;
+    },
+    title() {
+      return this.$store.getters.title;
+    }
   }
 };
 </script>

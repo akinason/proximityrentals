@@ -7,7 +7,7 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
-      path: '/signup',
+      path: '/',
       name: 'signup',
       // route level code-splitting
       // this generates a separate chunk (signup.[hash].js) for this route
