@@ -35,6 +35,11 @@ export default new Router({
       path: '/dashboard/app_details',
       name: 'apps',
       component: () => import('./views/Application')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('./views/Login')
     }
   ]
 })

@@ -4,35 +4,14 @@
       <br>
       {{ this.title }}
     </h3>
-    <p>signup to get started</p>
+    <p>Login to get started</p>
     <form autocomplete="off">
       <input
         type="text"
-        name="f_name"
-        id="f_name"
-        placeholder="First Name"
-        v-model="this.user.f_name"
-      >
-      <input
-        type="text"
-        name="l_name"
-        id="l_name"
-        v-model="this.user.l_name"
-        placeholder="Last Name"
-      >
-      <input
-        type="email"
-        name="email"
-        id="eamil"
-        v-model="this.user.email"
-        placeholder="Email Address"
-      >
-      <input
-        type="text"
-        name="number"
-        id="number"
-        v-model="this.user.phone"
-        placeholder="Phone Number"
+        name="username"
+        id="username"
+        v-model="username"
+        placeholder="Enter Email or Phone"
       >
       <input
         type="password"
@@ -49,8 +28,8 @@
       <input type="submit" value="submit">
       <p>
         Already have an account?
-        <strong @click="Login({ name: 'login' })">
-          <a href="/login">login</a>
+        <strong @click="Signup({ name: 'signup' })">
+          <a href="./signup">signup</a>
         </strong>
       </p>
     </form>
@@ -58,16 +37,17 @@
 </template>
 
 <script>
-// import { mapGetters } from "vuex";
 export default {
   name: "register",
   data() {
     return {
-      feedback: null
+      feedback: null,
+      username: null,
+      password: null
     };
   },
   methods: {
-    Login(route) {
+    Signup(route) {
       this.$router.push(route);
     }
   },
@@ -129,7 +109,7 @@ form > input {
 form span {
   position: absolute;
   right: 0;
-  top: 198px;
+  top: 58px;
   color: var(--gray);
 }
 form span:hover {
