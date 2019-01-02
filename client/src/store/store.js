@@ -9,15 +9,13 @@ export default new Vuex.Store({
       f_name: null,
       l_name: null,
       email: "vegascedric28@gmail.com",
-      phone: null,
+      phone: '680752220',
       password: null
     },
     shop_title: "proximity rentals",
   },
   mutations: {
-    updateUser(state, value) {
-      state.user.email = value
-    }
+
   },
   getters: {
     user(state) {
@@ -28,10 +26,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    updateUser({
-      commit
-    }, value) {
-      commit('updateUser', value)
-    }
+
   }
 })

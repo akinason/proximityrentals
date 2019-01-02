@@ -5,13 +5,13 @@
       {{ this.title }}
     </h3>
     <p>confirm email address</p>
-    <p class="email">{{ this.email }}</p>
+    <p class="phone">{{ this.phone }}</p>
     <form action method="post">
       <input
         type="text"
-        name="conf_email"
-        id="conf_email"
-        v-model="confirm_email"
+        name="conf_phone"
+        id="conf_phone"
+        v-model="confirm_phone"
         placeholder="Enter Code"
       >
       <input type="submit" value="verify">
@@ -27,15 +27,15 @@
 
 <script>
 export default {
-  name: "confirm_email",
+  name: "confirm_phone",
   data() {
     return {
-      confirm_email: null
+      confirm_phone: null
     };
   },
   computed: {
-    email() {
-      return this.$store.getters.user.email;
+    phone() {
+      return this.$store.getters.user.phone;
     },
     title() {
       return this.$store.getters.title;
@@ -126,7 +126,7 @@ form p a {
   color: #3339;
 }
 
-.email {
+.phone {
   text-transform: lowercase;
   position: relative;
   margin-top: 0.6rem;

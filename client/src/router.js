@@ -7,7 +7,7 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
-      path: '/',
+      path: '/signup',
       name: 'signup',
       // route level code-splitting
       // this generates a separate chunk (signup.[hash].js) for this route
@@ -19,6 +19,22 @@ export default new Router({
       name: 'confirm_email',
       props: true,
       component: () => import('./views/Confirm_email.vue')
+    },
+    {
+      path: '/signup/confirmation_phone',
+      name: 'confirm_phone',
+      props: true,
+      component: () => import('./views/Confirm_phone.vue')
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('./views/Dashboard')
+    },
+    {
+      path: '/dashboard/app_details',
+      name: 'apps',
+      component: () => import('./views/Application')
     }
   ]
 })

@@ -35,4 +35,14 @@ body {
 #app {
   font-family: "Titillium Web", sans-serif;
 }
+
+/* media query */
+@media only screen and (max-width: 500px) {
+  .signup {
+    width: 100%;
+  }
+  html {
+    width: 100%;
+  }
+}
 </style>

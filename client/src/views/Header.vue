@@ -60,6 +60,7 @@ header section#one span {
   margin-right: 3rem;
   font-size: 1.6rem;
   font-weight: 50;
+  cursor: pointer;
 }
 header section#one .logo {
   display: flex;
@@ -67,6 +68,7 @@ header section#one .logo {
   align-items: center;
   position: relative;
   width: 171px;
+  cursor: pointer;
 }
 header section#one .logo .logo_img {
   margin-right: 0.3rem;
