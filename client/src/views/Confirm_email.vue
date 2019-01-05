@@ -5,16 +5,17 @@
       {{ this.title }}
     </h3>
     <p>confirm email address</p>
-    <p class="email">{{ this.email }}</p>
+    <p class="email">{{ email }}</p>
     <form action method="post">
       <input
         type="text"
-        name="conf_email"
-        id="conf_email"
-        v-model="confirm_email"
+        name="confirmEmail"
+        id="confirmEmail"
+        v-model="id"
         placeholder="Enter Code"
       >
-      <input type="submit" value="verify">
+      <p v-if="error" class="red-text">{{ error }}</p>
+      <input type="submit" value="verify" @click.prevent="Confirm({ name: 'confirm_phone' })">
       <p id="login">
         Already have an account?
         <strong>
@@ -26,20 +27,38 @@
 </template>
 
 <script>
+import APIService from "@/services/APIService";
 export default {
-  name: "confirm_email",
+  name: "confirmEmail",
   data() {
     return {
-      confirm_email: null
+      id: null,
+      email: null,
+      error: null
     };
   },
+  methods: {
+    async Confirm(route) {
+      try {
+        await APIService.confirmEmailOrPhoneVerification({
+          id: this.id
+        });
+        this.$router.push({ route });
+      } catch (error) {
+        // manage error here.
+        if (error.response) {
+          this.error = "Invalid Code";
+        }
+      }
+    }
+  },
   computed: {
-    email() {
-      return this.$store.getters.user.email;
-    },
     title() {
       return this.$store.getters.title;
     }
+  },
+  beforeCreate() {
+    this.email = this.$store.getters.user.email;
   }
 };
 </script>
@@ -125,13 +144,17 @@ form p a {
   text-transform: capitalize;
   color: #3339;
 }
-
 .email {
   text-transform: lowercase;
   position: relative;
   margin-top: 0.6rem;
 }
-
+.red-text {
+  display: block;
+  margin: 1rem 0 0;
+  color: #dc0047;
+  font-size: 14px;
+}
 /* media query */
 @media only screen and (max-width: 500px) {
   .signup {

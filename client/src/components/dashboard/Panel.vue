@@ -1,10 +1,13 @@
 <template>
   <div id="panel">
     <div class="profile">
+      <div class="logout">
+        <p @click="logout">Logout</p>
+      </div>
       <div class="profile_img">
         <img src="../../../public/profile-icon-png-898.png" alt="profile_image">
       </div>
-      <p class="name">{{ user.f_name }} {{ user.l_name }}</p>
+      <p class="name">{{ this.user.first_name }} {{ this.user.last_name }}</p>
     </div>
     <div class="panel">
       <nav>
@@ -26,12 +29,21 @@
 export default {
   name: "panel",
   data() {
-    return {
-      user: {
-        f_name: "vegas",
-        l_name: "cedric"
-      }
-    };
+    return {};
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch("setToken", null);
+      this.$store.dispatch("setUser", null);
+      this.$router.push({
+        name: "login"
+      });
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    }
   }
 };
 </script>
@@ -43,7 +55,7 @@ export default {
   right: 2.5rem;
   display: flex;
   color: var(--white);
-  width: 130px;
+  width: 240px;
   align-items: center;
   cursor: pointer;
 }
@@ -56,9 +68,12 @@ export default {
   height: 100%;
   object-fit: contain;
 }
-.profile p {
+.profile > p {
   position: absolute;
   right: 0;
+}
+.profile .logout {
+  margin-right: 45px;
 }
 .panel a {
   text-decoration: none;

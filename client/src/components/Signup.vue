@@ -5,48 +5,59 @@
       {{ this.title }}
     </h3>
     <p>signup to get started</p>
-    <form autocomplete="off">
+    <form method="post" autocomplete="off">
       <input
         type="text"
-        name="f_name"
-        id="f_name"
+        name="firstName"
+        id="idFirstName"
         placeholder="First Name"
-        v-model="this.user.f_name"
+        v-model="user.first_name"
       >
       <input
         type="text"
-        name="l_name"
-        id="l_name"
-        v-model="this.user.l_name"
+        name="lastName"
+        id="idLastName"
+        v-model="user.last_name"
         placeholder="Last Name"
       >
-      <input
-        type="email"
-        name="email"
-        id="eamil"
-        v-model="this.user.email"
-        placeholder="Email Address"
-      >
-      <input
+      <!-- <input
         type="text"
-        name="number"
-        id="number"
-        v-model="this.user.phone"
-        placeholder="Phone Number"
-      >
-      <input
-        type="password"
-        name="password"
-        id="password"
-        v-model="this.user.password"
-        placeholder="Password"
-        autocomplete="new-password"
-      >
-      <span class="btn-show-pass">
-        <i class="fas fa-eye"></i>
-      </span>
-      <p v-if="feedback" class="red-text">{{ feedback }}</p>
-      <input type="submit" value="submit">
+        name="username"
+        id="idUsername"
+        v-model="user.username"
+        placeholder="User Name"
+      >-->
+      <input type="email" name="email" id="eamil" v-model="user.email" placeholder="Email Address">
+      <p v-if="error.email" class="red-text">
+        <ul v-for="err in error.email" :key="err">
+          <li>{{ err }}</li>
+        </ul>
+      </p>
+      <input type="text" name="phone" id="phone" v-model="user.phone" placeholder="Phone Number">
+      <p v-if="error.phone" class="red-text">
+        <ul v-for="err in error.phone" :key="err">
+          <li>{{ err }}</li>
+        </ul>
+      </p>
+      <div class="password">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          v-model="user.password"
+          placeholder="Password"
+          autocomplete="nope"
+        >
+        <span class="btn-show-pass">
+          <i class="fas fa-eye" @mousedown="showpassword"></i>
+        </span>
+        <p v-if="error.password" class="red-text">
+          <ul v-for="err in error.password" :key="err">
+            <li>{{ err }}</li>
+          </ul>
+        </p>
+      </div>
+      <input type="submit" value="submit" @click.prevent="Register">
       <p>
         Already have an account?
         <strong @click="Login({ name: 'login' })">
@@ -59,24 +70,49 @@
 
 <script>
 // import { mapGetters } from "vuex";
+import APIService from "@/services/APIService";
 export default {
   name: "register",
   data() {
     return {
-      feedback: null
+      user: {
+        first_name: null,
+        last_name: null,
+        email: null,
+        phone: null,
+        password: null
+      },
+      error: {}
     };
   },
   methods: {
     Login(route) {
       this.$router.push(route);
+    },
+    showpassword() {
+      const password = document.querySelector("input[name=password]");
+      if (password.type == "password") {
+        password.setAttribute("type", "text");
+      } else {
+        password.setAttribute("type", "password");
+      }
+    },
+    async Register() {
+      try {
+        const response = await APIService.register(this.user);
+        APIService.verifyEmailOrPhone({
+          username: this.response.data.email
+          })
+        this.$store.dispatch("setUser", response.data);
+        this.$router.push({ name: 'confirm_email' });
+      } catch (error) {
+        if (error.response) {
+          this.error = error.response.data;
+        }
+      }
     }
   },
   computed: {
-    user: {
-      get() {
-        return this.$store.getters.user;
-      }
-    },
     title() {
       return this.$store.getters.title;
     }
@@ -113,7 +149,7 @@ form {
   margin: 1rem auto;
   position: relative;
 }
-form > input {
+form input {
   width: 100%;
   border: none;
   background: transparent;
@@ -126,10 +162,13 @@ form > input {
   height: 45px;
   outline: none;
 }
+.password {
+  position: relative;
+}
 form span {
   position: absolute;
   right: 0;
-  top: 198px;
+  top: 40%;
   color: var(--gray);
 }
 form span:hover {
@@ -165,11 +204,13 @@ form p a {
 }
 form .red-text {
   display: block;
-  margin: 1rem 0 0;
-  color: rgb(177, 9, 9);
-  font-size: 20px;
+  margin: 0.21rem 0 0.11rem;
+  color: #dc0047;
+  font-size: 11px;
 }
-
+ul {
+  list-style: none;
+}
 /* media query */
 @media only screen and (max-width: 500px) {
   .signup {

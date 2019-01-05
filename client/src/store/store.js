@@ -5,17 +5,23 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {
-      f_name: null,
-      l_name: null,
-      email: "vegascedric28@gmail.com",
-      phone: '680752220',
-      password: null
-    },
+    user: null,
+    isLoggedIn: false,
+    token: null,
     shop_title: "proximity rentals",
   },
   mutations: {
-
+    setToken(state, token) {
+      state.token = token
+      if (token) {
+        state.isLoggedIn = true
+      } else {
+        state.isLoggedIn = false
+      }
+    },
+    setUser(state, user) {
+      state.user = user
+    }
   },
   getters: {
     user(state) {
@@ -26,6 +32,15 @@ export default new Vuex.Store({
     }
   },
   actions: {
-
+    setToken({
+      commit
+    }, token) {
+      commit('setToken', token)
+    },
+    setUser({
+      commit
+    }, user) {
+      commit('setUser', user)
+    }
   }
 })

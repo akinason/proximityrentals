@@ -7,6 +7,7 @@
 <script>
 import Dashboard from "@/components/dashboard/Dashboard.vue";
 export default {
+  name: "dash",
   components: {
     Dashboard
   }

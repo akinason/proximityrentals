@@ -1,7 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store/store';
 
 Vue.use(Router)
+
+const isAuthenticated = (to, from, next) => {
+  if (store.state.isUserLogin) {
+    next()
+  } else {
+    next('login')
+  }
+}
 
 export default new Router({
   mode: 'history',
@@ -12,34 +21,40 @@ export default new Router({
       // route level code-splitting
       // this generates a separate chunk (signup.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import( /* webpackChunkName: "signup" */ './views/Signup.vue')
+      component: () => import( /* webpackChunkName: "signup" */ '@/views/Signup.vue')
     },
     {
       path: '/signup/confirmation_email',
       name: 'confirm_email',
       props: true,
-      component: () => import('./views/Confirm_email.vue')
+      component: () => import('@/views/Confirm_email.vue')
     },
     {
       path: '/signup/confirmation_phone',
       name: 'confirm_phone',
       props: true,
-      component: () => import('./views/Confirm_phone.vue')
+      component: () => import('@/views/Confirm_phone.vue')
     },
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('./views/Dashboard')
+      beforeEnter: isAuthenticated,
+      component: () => import('@/views/Dashboard')
     },
     {
       path: '/dashboard/app_details',
       name: 'apps',
-      component: () => import('./views/Application')
+      beforeEnter: isAuthenticated,
+      component: () => import('@/views/Application')
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('./views/Login')
+      component: () => import('@/views/Login')
+    },
+    {
+      path: '*',
+      redirect: 'login'
     }
   ]
 })

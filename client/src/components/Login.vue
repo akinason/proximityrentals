@@ -13,22 +13,23 @@
         v-model="username"
         placeholder="Enter Email or Phone"
       >
-      <input
-        type="password"
-        name="password"
-        id="password"
-        v-model="this.user.password"
-        placeholder="Password"
-        autocomplete="new-password"
-      >
-      <span class="btn-show-pass">
-        <i class="fas fa-eye"></i>
-      </span>
+      <div class="password">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          v-model="password"
+          placeholder="Password"
+        >
+        <span class="btn-show-pass">
+          <i class="fas fa-eye" @click="showpassword"></i>
+        </span>
+      </div>
       <p v-if="feedback" class="red-text">{{ feedback }}</p>
-      <input type="submit" value="submit">
+      <input type="submit" value="submit" @click.prevent="Login({ name: 'dashboard' })">
       <p>
         Already have an account?
-        <strong @click="Signup({ name: 'signup' })">
+        <strong @click.prevent="Signup({ name: 'signup' })">
           <a href="./signup">signup</a>
         </strong>
       </p>
@@ -37,11 +38,13 @@
 </template>
 
 <script>
+import APIService from "@/services/APIService";
 export default {
   name: "register",
   data() {
     return {
       feedback: null,
+      feedback1: null,
       username: null,
       password: null
     };
@@ -49,14 +52,43 @@ export default {
   methods: {
     Signup(route) {
       this.$router.push(route);
+    },
+    showpassword() {
+      const password = document.querySelector("input[name=password]");
+      if (password.type == "password") {
+        password.setAttribute("type", "text");
+      } else {
+        password.setAttribute("type", "password");
+      }
+    },
+    async Login(route) {
+      try {
+        const response = await APIService.login({
+          username: this.username,
+          password: this.password
+        });
+        this.$store.dispatch("setToken", response.data.token);
+        this.$store.dispatch("setUser", response.data.user);
+        if (this.$store.state.isLoggedIn) {
+          this.$router.push(route);
+        } else {
+          this.$router.push({ name: "login" });
+        }
+      } catch (error) {
+        // this.feedback = error.response.data.non_field_errors[0];
+        const elements = document.querySelector("form").elements;
+        Array.from(elements).forEach(() => {
+          if (
+            error.response.data.password ||
+            error.response.data.username ||
+            error.response.data.non_field_errors
+          )
+            this.feedback = "Invalid Username or Password";
+        });
+      }
     }
   },
   computed: {
-    user: {
-      get() {
-        return this.$store.getters.user;
-      }
-    },
     title() {
       return this.$store.getters.title;
     }
@@ -93,7 +125,7 @@ form {
   margin: 1rem auto;
   position: relative;
 }
-form > input {
+form input {
   width: 100%;
   border: none;
   background: transparent;
@@ -106,10 +138,13 @@ form > input {
   height: 45px;
   outline: none;
 }
+.password {
+  position: relative;
+}
 form span {
   position: absolute;
   right: 0;
-  top: 58px;
+  top: 40%;
   color: var(--gray);
 }
 form span:hover {
@@ -146,8 +181,8 @@ form p a {
 form .red-text {
   display: block;
   margin: 1rem 0 0;
-  color: rgb(177, 9, 9);
-  font-size: 20px;
+  color: #dc0047;
+  font-size: 11px;
 }
 
 /* media query */
