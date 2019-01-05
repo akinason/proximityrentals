@@ -268,22 +268,23 @@ class PhoneAndEmailVerification(APIView):
         if str(user.email) == str(username): #  Send a verification code for email verification.
             email = EmailMessage(
                 subject='Email Verification Code',
-                body='This is your email verification code: <br> <h1>%s</h1> ' % code,
+                body='This is your email verification code: %s ' % code,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[user.email],
                 # html_message='This is your email verification code. <br> <h1>%s</h1> ' % code,
             )
+    
             email.send()
-            user.email_verifiation_code = code 
+            user.email_verification_code = code 
             user.save()
-            return Response({'id': user.pk }, status=status.HTTP_200_OK)
+            return Response({'id': user.pk , 'code': code}, status=status.HTTP_200_OK)
 
         if str(user.phone) == str(username):
             message = 'Please enter this code to verify your phone number: %s' % code 
-            # sms_manager.send(user.phone, message)
+            sms_manager.send(user.phone, message)
             user.phone_verification_code = code 
             user.save()
-            return Response({'id': user.pk }, status=status.HTTP_200_OK)
+            return Response({'id': user.pk, 'code': code }, status=status.HTTP_200_OK)
 
         return Response({'error': 'Invalid Phone or Email'}, status=status.HTTP_404_NOT_FOUND)
 
