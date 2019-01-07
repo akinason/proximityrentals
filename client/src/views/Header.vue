@@ -9,7 +9,7 @@
           <div class="logo_img">
             <img src="@/assets/logo.png" alt="proximity_rentals">
           </div>
-          <p>{{ title }}</p>
+          <p>{{ this.title }}</p>
         </div>
       </section>
     </header>
@@ -19,9 +19,12 @@
 <script>
 export default {
   data() {
-    return {
-      title: "Proximity Rentals"
-    };
+    return {};
+  },
+  computed: {
+    title() {
+      return this.$store.getters.title;
+    }
   }
 };
 </script>
@@ -67,7 +70,7 @@ header section#one .logo {
   flex-basis: 300;
   align-items: center;
   position: relative;
-  width: 171px;
+  width: 172px;
   cursor: pointer;
 }
 header section#one .logo .logo_img {
@@ -76,7 +79,7 @@ header section#one .logo .logo_img {
 header section#one .logo p {
   position: absolute;
   right: 0;
-  top: 6px;
+  top: 3px;
 }
 /* media query */
 

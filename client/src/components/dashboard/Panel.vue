@@ -55,7 +55,7 @@ export default {
   right: 2.5rem;
   display: flex;
   color: var(--white);
-  width: 240px;
+  width: 270px;
   align-items: center;
   cursor: pointer;
 }
@@ -71,10 +71,22 @@ export default {
 .profile > p {
   position: absolute;
   right: 0;
+  text-transform: capitalize;
 }
 .profile .logout {
   margin-right: 45px;
+  text-transform: uppercase;
+  padding: 10px;
 }
+.profile .logout:hover {
+  background: #775036;
+  transition: all linear 0.5s;
+}
+.profile .logout:active {
+  background: #d69a71;
+  transition: all linear 0.5s;
+}
+
 .panel a {
   text-decoration: none;
   color: var(--text_color);

@@ -5,7 +5,7 @@
       {{ this.title }}
     </h3>
     <p>confirm email address</p>
-    <p class="email">{{ email }}</p>
+    <p class="email">{{ this.user.email }}</p>
     <form action method="post">
       <input
         type="text"
@@ -29,11 +29,10 @@
 <script>
 import APIService from "@/services/APIService";
 export default {
-  name: "confirmEmail",
+  name: "confirm_email",
   data() {
     return {
       id: null,
-      email: null,
       error: null
     };
   },
@@ -55,10 +54,10 @@ export default {
   computed: {
     title() {
       return this.$store.getters.title;
+    },
+    user() {
+      return this.$store.getters.user;
     }
-  },
-  beforeCreate() {
-    this.email = this.$store.getters.user.email;
   }
 };
 </script>

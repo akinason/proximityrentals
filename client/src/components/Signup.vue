@@ -49,7 +49,7 @@
           autocomplete="nope"
         >
         <span class="btn-show-pass">
-          <i class="fas fa-eye" @mousedown="showpassword"></i>
+          <i class="fas fa-eye" @click="showpassword"></i>
         </span>
         <p v-if="error.password" class="red-text">
           <ul v-for="err in error.password" :key="err">
@@ -60,8 +60,8 @@
       <input type="submit" value="submit" @click.prevent="Register">
       <p>
         Already have an account?
-        <strong @click="Login({ name: 'login' })">
-          <a href="/login">login</a>
+        <strong @click.prevent="Login({ name: 'login' })">
+          <a href="">login</a>
         </strong>
       </p>
     </form>
@@ -99,12 +99,18 @@ export default {
     },
     async Register() {
       try {
-        const response = await APIService.register(this.user);
-        APIService.verifyEmailOrPhone({
-          username: this.response.data.email
+        /*const response = */await APIService.register(this.user).then(res => {
+          APIService.verifyEmailOrPhone({
+          username: res.data.email
           })
-        this.$store.dispatch("setUser", response.data);
+        this.$store.dispatch("setUser", this.user);
         this.$router.push({ name: 'confirm_email' });
+        }).catch(err => {
+          if(err) {
+            this.error = err.response.data
+          }
+        });
+        
       } catch (error) {
         if (error.response) {
           this.error = error.response.data;
@@ -189,6 +195,11 @@ form input[type="submit"] {
 form input[type="submit"]:hover {
   background: #6d466d;
   cursor: pointer;
+  transition: all linear 0.5s;
+}
+form input[type="submit"]:active {
+  background: #d69a71;
+  transition: all linear 0.5s;
 }
 form p {
   all: unset;

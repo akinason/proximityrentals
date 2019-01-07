@@ -26,7 +26,7 @@
         </span>
       </div>
       <p v-if="feedback" class="red-text">{{ feedback }}</p>
-      <input type="submit" value="submit" @click.prevent="Login({ name: 'dashboard' })">
+      <input type="submit" value="submit" @click.prevent="Login()">
       <p>
         Already have an account?
         <strong @click.prevent="Signup({ name: 'signup' })">
@@ -45,8 +45,8 @@ export default {
     return {
       feedback: null,
       feedback1: null,
-      username: null,
-      password: null
+      username: "vegascedric29@gmail.com",
+      password: "VrichCrich99"
     };
   },
   methods: {
@@ -61,7 +61,7 @@ export default {
         password.setAttribute("type", "password");
       }
     },
-    async Login(route) {
+    async Login() {
       try {
         const response = await APIService.login({
           username: this.username,
@@ -70,7 +70,7 @@ export default {
         this.$store.dispatch("setToken", response.data.token);
         this.$store.dispatch("setUser", response.data.user);
         if (this.$store.state.isLoggedIn) {
-          this.$router.push(route);
+          this.$router.push({ name: "dashboard" });
         } else {
           this.$router.push({ name: "login" });
         }
@@ -165,6 +165,11 @@ form input[type="submit"] {
 form input[type="submit"]:hover {
   background: #6d466d;
   cursor: pointer;
+  transition: all linear 0.5s;
+}
+form input[type="submit"]:active {
+  background: #d69a71;
+  transition: all linear 0.5s;
 }
 form p {
   all: unset;

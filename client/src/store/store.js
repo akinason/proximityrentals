@@ -6,9 +6,10 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     user: null,
-    isLoggedIn: false,
+    isLoggedIn: true,
     token: null,
     shop_title: "proximity rentals",
+    app: null
   },
   mutations: {
     setToken(state, token) {
@@ -21,6 +22,13 @@ export default new Vuex.Store({
     },
     setUser(state, user) {
       state.user = user
+    },
+    setApp(state, app) {
+      if (state.token && state.isLoggedIn) {
+        state.app = app
+      } else {
+        state.app = null
+      }
     }
   },
   getters: {
@@ -41,6 +49,11 @@ export default new Vuex.Store({
       commit
     }, user) {
       commit('setUser', user)
+    },
+    setApp({
+      commit
+    }, app) {
+      commit('setApp', app)
     }
   }
 })

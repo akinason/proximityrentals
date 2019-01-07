@@ -7,15 +7,15 @@
           <h3>Dashboard</h3>
           <p>Add a new application</p>
         </header>
-        <form action>
-          <input
-            type="text"
-            name="app_name"
-            id="app_name"
-            v-model="app_name"
-            placeholder="Enter app name"
-          >
-          <input type="submit" value="Register">
+        <form action method="post">
+          <input type="text" name="name" id="name" v-model="name" placeholder="Enter app name">
+          <p v-if='feedback' class='red-text'>
+            <ul v-for="err in feedback" :key="err">
+              <li>{{ err }}</li>
+            </ul>
+          </p>
+          <p>{{ name }}</p>
+          <input type="submit" value="Register" @click.prevent="registerApp">
         </form>
         <section id="list_apps">
           <h3>List of applications</h3>
@@ -51,6 +51,7 @@
 
 <script>
 import Panel from "./Panel.vue";
+import APIService from "@/services/APIService";
 export default {
   name: "dashboard",
   components: {
@@ -58,8 +59,22 @@ export default {
   },
   data() {
     return {
-      app_name: null
+      name: null,
+      feedback: {}
     };
+  },
+  methods: {
+    async registerApp() {
+      try {
+        await APIService.createApp(this.name).then(res => {
+          console.log(res);
+        });
+      } catch (error) {
+        if (error) {
+          this.feedback = error.response
+        }
+      }
+    }
   }
 };
 </script>
@@ -117,6 +132,10 @@ export default {
   background: #5f3f52;
   cursor: pointer;
 }
+.wrapper form input[type="submit"]:active {
+  background: #d69a71;
+  transition: all linear 0.5s;
+}
 #list_apps {
   margin-top: 4rem;
   position: relative;
@@ -147,7 +166,10 @@ export default {
   background: #5f3f52;
   cursor: pointer;
 }
-
+#list_apps button:active {
+  background: #d69a71;
+  transition: all linear 0.5s;
+}
 /* table style */
 .display table {
   width: 100%;
@@ -190,6 +212,16 @@ export default {
 .display table tbody tr:hover {
   background: rgb(180, 180, 180);
   cursor: pointer;
+}
+form .red-text {
+  display: block;
+  margin: 0.41rem 0 0.31rem;
+  color: #dc0047;
+  font-size: 15px;
+  text-align: center;
+}
+ul {
+  list-style: none;
 }
 
 /* media query */
