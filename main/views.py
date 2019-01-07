@@ -190,7 +190,7 @@ class ObtainAuthToken(BaseObtainAuthToken):
 class PasswordReset(APIView):
 
     def post(self, request, *args, **kwargs):
-        username = request.POST.get('username')
+        username = request.data.get('username')
         # Generate a 5 digits code and send.
         user = user_manager.get_user(username)
         if not user:
@@ -240,8 +240,8 @@ class PasswordResetConfirm(APIView):
     Takes the id and code plus password to create a new password and return a login token plus user instance.
     """
     def put(self, request, *args, **kwargs):
-        id = request.POST.get('id')
-        code = request.POST.get('code')
+        id = request.data.get('id')
+        code = request.data.get('code')
         if User.objects.filter(is_deleted=False, pk=id, code=code).exists():
             user = User.objects.filter(pk=id).get()
             serializer = serializers.PasswordResetSerializer(user, data=request.data)
@@ -262,7 +262,7 @@ class PhoneAndEmailVerification(APIView):
     Generates a 5 digit code used for Email or Phone Verification.
     """
     def post(self, request, *args, **kwargs):
-        username = request.POST.get('username')
+        username = request.data.get('username')
         user = user_manager.get_user(username)
         code = user_manager.make_random_password(length=5, allowed_chars='123456789')
         if user and str(user.email) == str(username): #  Send a verification code for email verification.
@@ -296,8 +296,8 @@ class PhoneAndEmailVerificationConfirm(APIView):
     """
 
     def post(self, request, *args, **kwargs):
-        id = request.POST.get('id')
-        code = request.POST.get('code')
+        id = request.data.get('id')
+        code = request.data.get('code')
         if User.objects.filter(id=id).exists() and code:
             user = User.objects.get(id=id)
             if str(user.email_verification_code) == str(code):
