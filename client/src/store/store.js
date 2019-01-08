@@ -23,6 +23,9 @@ export default new Vuex.Store({
     setUser(state, user) {
       state.user = user
     },
+    setUserId(state, id) {
+      state.user.id = id
+    },
     setApp(state, app) {
       if (state.token && state.isLoggedIn) {
         state.app = app
@@ -54,6 +57,11 @@ export default new Vuex.Store({
       commit
     }, app) {
       commit('setApp', app)
+    },
+    setUserId({
+      commit
+    }, id) {
+      commit('setUserId', id)
     }
   }
 })

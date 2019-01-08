@@ -4,41 +4,57 @@
       <br>
       {{ this.title }}
     </h3>
-    <p>confirm email address</p>
-    <p class="phone">{{ this.phone }}</p>
+    <p>confirm phone number</p>
+    <p class="phone">{{ this.user.phone }}</p>
     <form action method="post">
-      <input
-        type="text"
-        name="conf_phone"
-        id="conf_phone"
-        v-model="confirm_phone"
-        placeholder="Enter Code"
-      >
-      <input type="submit" value="verify">
+      <input type="text" name="code" id="code" v-model="code" placeholder="Enter Code">
+      <p v-if="error" class="red-text">{{ error }}</p>
+      <input type="submit" value="verify" @click="Confirm({ name: 'login' })">
       <p id="login">
         Already have an account?
-        <strong>
+        <strong @click.prevent="Login({ name: 'login' })">
           <a href>login</a>
         </strong>
       </p>
     </form>
   </div>
-</template>
+</template>code
 
 <script>
+import APIService from "@/services/APIService";
 export default {
   name: "confirm_phone",
   data() {
     return {
-      confirm_phone: null
+      code: null,
+      error: null
     };
   },
-  computed: {
-    phone() {
-      return this.$store.getters.user.phone;
+  methods: {
+    Login(route) {
+      this.$router.push(route);
     },
+    async Confirm(route) {
+      try {
+        await APIService.confirmEmailOrPhoneVerification({
+          code: this.code,
+          id: this.user.id
+        });
+        this.$router.push({ route });
+      } catch (error) {
+        // manage error here.
+        if (error.response) {
+          this.error = "Invalid Code";
+        }
+      }
+    }
+  },
+  computed: {
     title() {
       return this.$store.getters.title;
+    },
+    user() {
+      return this.$store.getters.user;
     }
   }
 };

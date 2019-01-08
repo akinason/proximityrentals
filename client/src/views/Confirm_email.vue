@@ -7,18 +7,12 @@
     <p>confirm email address</p>
     <p class="email">{{ this.user.email }}</p>
     <form action method="post">
-      <input
-        type="text"
-        name="confirmEmail"
-        id="confirmEmail"
-        v-model="id"
-        placeholder="Enter Code"
-      >
+      <input type="text" name="code" id="code" v-model="code" placeholder="Enter Code">
       <p v-if="error" class="red-text">{{ error }}</p>
       <input type="submit" value="verify" @click.prevent="Confirm({ name: 'confirm_phone' })">
       <p id="login">
         Already have an account?
-        <strong>
+        <strong @click.prevent="Login({ name: 'login' })">
           <a href>login</a>
         </strong>
       </p>
@@ -32,17 +26,29 @@ export default {
   name: "confirm_email",
   data() {
     return {
-      id: null,
+      code: null,
       error: null
     };
   },
   methods: {
+    Login(route) {
+      this.$router.push(route);
+    },
     async Confirm(route) {
       try {
         await APIService.confirmEmailOrPhoneVerification({
-          id: this.id
-        });
-        this.$router.push({ route });
+          code: this.code,
+          id: this.user.id
+        })
+          .then(() => {
+            APIService.verifyEmailOrPhone({
+              username: this.user.phone
+            });
+            this.$router.push({ route });
+          })
+          .catch(err => {
+            this.error = err.response.data;
+          });
       } catch (error) {
         // manage error here.
         if (error.response) {

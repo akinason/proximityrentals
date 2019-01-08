@@ -20,20 +20,13 @@
         v-model="user.last_name"
         placeholder="Last Name"
       >
-      <!-- <input
-        type="text"
-        name="username"
-        id="idUsername"
-        v-model="user.username"
-        placeholder="User Name"
-      >-->
       <input type="email" name="email" id="eamil" v-model="user.email" placeholder="Email Address">
       <p v-if="error.email" class="red-text">
         <ul v-for="err in error.email" :key="err">
           <li>{{ err }}</li>
         </ul>
       </p>
-      <input type="text" name="phone" id="phone" v-model="user.phone" placeholder="Phone Number">
+      <vue-tel-input v-model="user.phone" id="phone"> </vue-tel-input>
       <p v-if="error.phone" class="red-text">
         <ul v-for="err in error.phone" :key="err">
           <li>{{ err }}</li>
@@ -69,13 +62,14 @@
 </template>
 
 <script>
-// import { mapGetters } from "vuex";
+import 'vue-tel-input/dist/vue-tel-input.css'
 import APIService from "@/services/APIService";
 export default {
   name: "register",
   data() {
     return {
       user: {
+        id: null,
         first_name: null,
         last_name: null,
         email: null,
@@ -103,7 +97,7 @@ export default {
           APIService.verifyEmailOrPhone({
           username: res.data.email
           })
-        this.$store.dispatch("setUser", this.user);
+        this.$store.dispatch("setUser", res.data);
         this.$router.push({ name: 'confirm_email' });
         }).catch(err => {
           if(err) {
@@ -170,6 +164,17 @@ form input {
 }
 .password {
   position: relative;
+}
+.vue-tel-input[data-v-099879eb] {
+  width: 100%;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid #ddd;
+  padding: 0 5px;
+  font-size: 15px;
+  color: #555555;
+  line-height: 1.2;
+  height: 45px;
 }
 form span {
   position: absolute;

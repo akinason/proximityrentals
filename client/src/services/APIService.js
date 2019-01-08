@@ -7,7 +7,7 @@ const APiheaders = {
     headers: {
         'Content-Type': 'application/json',
         // 'Access-Control-Allow-Origin': '*',
-        'API-KEY': 'PhW8GMqZtapbk2yBB4apLVAXtWK6EALJE5q3d6e4uNY52wpmm9',
+        'API-KEY': 'rx6JjqWHcWXt5xLqsUYLJ2nvwbyaGKFyfYTUPn3xq36U7GqALz',
     }
 }
 
