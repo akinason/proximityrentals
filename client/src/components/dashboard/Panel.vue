@@ -19,6 +19,13 @@
               </span> Dashboard
             </a>
           </li>
+          <li>
+            <a href>
+              <span>
+                <i class="fas fa-cog"></i>
+              </span> Setting
+            </a>
+          </li>
         </ul>
       </nav>
     </div>
@@ -33,8 +40,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch("setToken", null);
-      this.$store.dispatch("setUser", null);
+      this.$store.dispatch("logout");
       this.$router.push({
         name: "login"
       });
@@ -93,6 +99,7 @@ export default {
   padding: 7px 0 7px 13px;
   display: block;
   letter-spacing: 0.8px;
+  border-bottom: 1px solid #bebcbc;
 }
 .panel a span {
   margin-right: 5px;
@@ -109,11 +116,14 @@ export default {
   width: 100%;
   display: block;
 }
-.panel ul:nth-child(1) {
+/* .panel ul:nth-child(1) {
   background: #e5e5e5;
-}
+} */
 .panel nav {
   padding-top: 1rem;
+}
+.panel ul li + li {
+  margin-top: 10px;
 }
 
 /* media query */

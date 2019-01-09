@@ -9,7 +9,7 @@
     <form action method="post">
       <input type="text" name="code" id="code" v-model="code" placeholder="Enter Code">
       <p v-if="error" class="red-text">{{ error }}</p>
-      <input type="submit" value="verify" @click="Confirm({ name: 'login' })">
+      <input type="submit" value="verify" @click.prevent="Confirm">
       <p id="login">
         Already have an account?
         <strong @click.prevent="Login({ name: 'login' })">
@@ -34,13 +34,13 @@ export default {
     Login(route) {
       this.$router.push(route);
     },
-    async Confirm(route) {
+    async Confirm() {
       try {
         await APIService.confirmEmailOrPhoneVerification({
           code: this.code,
           id: this.user.id
         });
-        this.$router.push({ route });
+        this.$router.push({ name: "login" });
       } catch (error) {
         // manage error here.
         if (error.response) {

@@ -12,7 +12,8 @@
     "vue": "^2.5.21",
     "vue-router": "^3.0.1",
     "vue-tel-input": "^2.0.12",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {
     "@babel/preset-stage-2": "^7.0.0",

@@ -1,7 +1,4 @@
 import Api from './Api';
-import store from '@/store/store'
-
-const token = store.state.token
 
 const APiheaders = {
     headers: {
@@ -27,13 +24,12 @@ export default {
 
     // applications
     createApp(data) {
-        return Api().post('/developer/apps/', data, {
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Access-Control-Allow-Origin': '*',
-                'API-KEY': 'PhW8GMqZtapbk2yBB4apLVAXtWK6EALJE5q3d6e4uNY52wpmm9',
-                "Token": token
-            }
-        })
+        return Api().post('developer/apps/', data, APiheaders)
+    },
+    getApps() {
+        return Api().get(`developer/apps/`, APiheaders)
+    },
+    getSingleApp(id) {
+        return Api().get(`developer/app/?id=${id}`, APiheaders)
     }
 }

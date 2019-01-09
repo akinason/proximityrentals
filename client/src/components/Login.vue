@@ -5,7 +5,7 @@
       {{ this.title }}
     </h3>
     <p>Login to get started</p>
-    <form autocomplete="off">
+    <form autocomplete="off" @submit.prevent="Login">
       <input
         type="text"
         name="username"
@@ -26,7 +26,7 @@
         </span>
       </div>
       <p v-if="feedback" class="red-text">{{ feedback }}</p>
-      <input type="submit" value="submit" @click.prevent="Login()">
+      <input type="submit" value="submit">
       <p>
         Already have an account?
         <strong @click.prevent="Signup({ name: 'signup' })">
@@ -44,8 +44,7 @@ export default {
   data() {
     return {
       feedback: null,
-      feedback1: null,
-      username: "vegascedric29@gmail.com",
+      username: "vegascedric28@gmail.com",
       password: "VrichCrich99"
     };
   },

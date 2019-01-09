@@ -8,30 +8,32 @@
           <button @click="navigateTo({ name: 'dashboard' })">back</button>
         </header>
         <form action method="get">
-          <label for="app_id">
-            <span>Id:</span>
-            <input type="text" name="app_id" id="app_id" v-model="app.id">
-          </label>
-          <label for="app_name">
-            <span>Name:</span>
-            <input type="text" name="app_name" id="app_name" v-model="app.name">
-          </label>
-          <label for="app_key" value="key">
-            <span>Key:</span>
-            <input type="text" name="app_key" id="app_key" v-model="app.key">
-          </label>
-          <label for="app_secret">
-            <span>Secret:</span>
-            <input type="text" name="app_secret" id="app_secret" v-model="app.secret">
-          </label>
-          <label for="is_active">
-            <span>Is_active:</span>
-            <input type="text" name="is_active" id="is_active" v-model="app.is_active">
-          </label>
-          <label for="createdon">
-            <span>Created On:</span>
-            <input type="text" name="createdon" id="createdon" v-model="app.createdon">
-          </label>
+          <fieldset disabled>
+            <label for="app_id">
+              <span>Id:</span>
+              <input type="text" name="app_id" id="app_id" v-model="this.app.id">
+            </label>
+            <label for="app_name">
+              <span>Name:</span>
+              <input type="text" name="app_name" id="app_name" v-model="this.app.name">
+            </label>
+            <label for="app_key" value="key">
+              <span>Key:</span>
+              <input type="text" name="app_key" id="app_key" v-model="this.app.key">
+            </label>
+            <label for="app_secret">
+              <span>Secret:</span>
+              <input type="text" name="app_secret" id="app_secret" v-model="this.app.secret">
+            </label>
+            <label for="is_active">
+              <span>Is_active:</span>
+              <input type="text" name="is_active" id="is_active" v-model="this.app.is_active">
+            </label>
+            <label for="createdon">
+              <span>Created On:</span>
+              <input type="text" name="createdon" id="createdon" v-model="this.app.created_on">
+            </label>
+          </fieldset>
         </form>
       </section>
     </div>
@@ -46,20 +48,16 @@ export default {
     Panel
   },
   data() {
-    return {
-      app: {
-        id: "id",
-        name: "Application Name",
-        key: "Application key",
-        secret: "Application Secret",
-        is_active: false,
-        createdon: "Created on"
-      }
-    };
+    return {};
   },
   methods: {
     navigateTo(route) {
       this.$router.push(route);
+    }
+  },
+  computed: {
+    app() {
+      return this.$store.getters.app;
     }
   }
 };
@@ -118,8 +116,12 @@ export default {
   height: 30px;
   font-size: 15px;
   color: var(--gray);
-  padding-left: 5px;
+  padding-left: 25px;
   border: none;
   border-bottom: 1px solid var(--bg);
+}
+.wrapper form fieldset {
+  border: none;
+  background: transparent;
 }
 </style>

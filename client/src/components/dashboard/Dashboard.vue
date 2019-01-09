@@ -14,31 +14,22 @@
               <li>{{ err }}</li>
             </ul>
           </p>
-          <p>{{ name }}</p>
           <input type="submit" value="Register" @click.prevent="registerApp">
         </form>
         <section id="list_apps">
           <h3>List of applications</h3>
-          <form action>
-            <input type="search" name="seacrh" id="search" placeholder="Enter application name">
-            <label for="search">
-              <button name="search">Search</button>
-            </label>
-          </form>
           <div class="display">
             <table>
               <thead>
                 <th>Application Name</th>
                 <th>Created on</th>
+                <th>Is_Active</th>
               </thead>
               <tbody>
-                <tr>
-                  <td>wheelbarow</td>
-                  <td>1/jan/19</td>
-                </tr>
-                <tr>
-                  <td>wheelbarow</td>
-                  <td>1/jan/19</td>
+                <tr v-for="app in apps" :key="app.id" @click="navigateTo(app.id)">
+                  <td>{{ app.name }}</td>
+                  <td>{{ app.created_on }}</td>
+                  <td>{{ app.is_active }}</td>
                 </tr>
               </tbody>
             </table>
@@ -50,6 +41,8 @@
 </template>
 
 <script>
+
+
 import Panel from "./Panel.vue";
 import APIService from "@/services/APIService";
 export default {
@@ -60,22 +53,42 @@ export default {
   data() {
     return {
       name: null,
-      feedback: {}
+      apps: {},
+      feedback: {},
     };
   },
   methods: {
+    navigateTo(id) {
+      APIService.getSingleApp(id).then(res => {
+        this.$store.dispatch('createApp', res.data)
+        this.$router.push({ name: 'apps' })
+      })
+    },
     async registerApp() {
       try {
-        await APIService.createApp(this.name).then(res => {
-          console.log(res);
+        await APIService.createApp({ name: this.name }).then(() => {
+          this.$router.push({ name: 'login' })
+        }).catch(err => {
+          this.feedback = err.response.data
         });
       } catch (error) {
         if (error) {
-          this.feedback = error.response
+          this.feedback = error.response.data
         }
       }
     }
-  }
+  },
+  async mounted() {
+    try {
+        await APIService.getApps().then(res => {
+          this.apps = res.data
+        })
+      }catch (error) {
+        if(error){
+          error.response.data
+        }
+      }
+  },
 };
 </script>
 
@@ -137,7 +150,7 @@ export default {
   transition: all linear 0.5s;
 }
 #list_apps {
-  margin-top: 4rem;
+  margin-top: 8rem;
   position: relative;
 }
 #list_apps form {
@@ -175,7 +188,6 @@ export default {
   width: 100%;
 }
 .display table thead {
-  text-align: start;
   border-collapse: collapse;
   width: 100%;
   display: flex;
@@ -185,13 +197,13 @@ export default {
   width: 50%;
 }
 .display table th {
-  text-align: start;
+  text-align: center;
   border-bottom: 1px solid #ddd;
   padding: 10px;
   box-sizing: border-box;
 }
 .display table tbody tr {
-  text-align: start;
+  text-align: center;
   border-collapse: collapse;
   width: 100%;
   display: flex;
@@ -201,7 +213,7 @@ export default {
   width: 50%;
 }
 .display table td {
-  text-align: start;
+  text-align: center;
   border-bottom: 1px solid #ddd;
   padding: 10px;
   box-sizing: border-box;

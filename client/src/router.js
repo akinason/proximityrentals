@@ -40,7 +40,7 @@ export default new Router({
             component: () => import('@/views/Dashboard')
         },
         {
-            path: '/dashboard/app_details',
+            path: '/dashboard/app',
             name: 'apps',
             // beforeEnter: isAuthenticated,
             component: () => import('@/views/Application')

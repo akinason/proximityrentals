@@ -1,20 +1,23 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Api from '@/services/Api'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     user: null,
-    isLoggedIn: true,
+    isLoggedIn: false,
     token: null,
     shop_title: "proximity rentals",
-    app: null
+    apps: null
   },
   mutations: {
     setToken(state, token) {
       state.token = token
       if (token) {
+        Api().defaults.headers.common['Authorization'] = `Token ${token}`
         state.isLoggedIn = true
       } else {
         state.isLoggedIn = false
@@ -23,15 +26,14 @@ export default new Vuex.Store({
     setUser(state, user) {
       state.user = user
     },
-    setUserId(state, id) {
-      state.user.id = id
+    logout(state) {
+      state.isLoggedIn = false
+      state.token = null
+      state.user = null
+      delete Api().defaults.headers.common['Authorization']
     },
-    setApp(state, app) {
-      if (state.token && state.isLoggedIn) {
-        state.app = app
-      } else {
-        state.app = null
-      }
+    createApp(state, apps) {
+      state.apps = apps
     }
   },
   getters: {
@@ -40,6 +42,12 @@ export default new Vuex.Store({
     },
     title(state) {
       return state.shop_title
+    },
+    token(state) {
+      return state.token
+    },
+    app(state) {
+      return state.apps
     }
   },
   actions: {
@@ -53,15 +61,16 @@ export default new Vuex.Store({
     }, user) {
       commit('setUser', user)
     },
-    setApp({
+    logout({
+      commit
+    }) {
+      commit('logout')
+    },
+    createApp({
       commit
     }, app) {
-      commit('setApp', app)
-    },
-    setUserId({
-      commit
-    }, id) {
-      commit('setUserId', id)
+      commit('createApp', app)
     }
-  }
+  },
+  plugins: [createPersistedState()]
 })
