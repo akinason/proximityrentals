@@ -21,6 +21,7 @@ export default new Vuex.Store({
         state.isLoggedIn = true
       } else {
         state.isLoggedIn = false
+        localStorage.removeItem('vuex')
       }
     },
     setUser(state, user) {
@@ -30,6 +31,8 @@ export default new Vuex.Store({
       state.isLoggedIn = false
       state.token = null
       state.user = null
+      localStorage.removeItem('user-token')
+      localStorage.removeItem('vuex')
       delete Api().defaults.headers.common['Authorization']
     },
     createApp(state, apps) {

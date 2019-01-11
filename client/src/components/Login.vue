@@ -62,17 +62,21 @@ export default {
     },
     async Login() {
       try {
-        const response = await APIService.login({
+        await APIService.login({
           username: this.username,
           password: this.password
+        }).then(res => {
+          const token = res.data.token;
+          const user = res.data.user;
+          localStorage.setItem("user-token", token);
+          this.$store.dispatch("setToken", localStorage.getItem("user-token"));
+          this.$store.dispatch("setUser", user);
+          if (this.$store.state.isLoggedIn) {
+            this.$router.push({ name: "dashboard" });
+          } else {
+            this.$router.push({ name: "login" });
+          }
         });
-        this.$store.dispatch("setToken", response.data.token);
-        this.$store.dispatch("setUser", response.data.user);
-        if (this.$store.state.isLoggedIn) {
-          this.$router.push({ name: "dashboard" });
-        } else {
-          this.$router.push({ name: "login" });
-        }
       } catch (error) {
         // this.feedback = error.response.data.non_field_errors[0];
         const elements = document.querySelector("form").elements;

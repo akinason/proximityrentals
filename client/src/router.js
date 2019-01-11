@@ -1,18 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import store from './store/store';
+import store from './store/store'
 
 Vue.use(Router)
 
-// const isAuthenticated = (to, from, next) => {
-//     if (store.state.isUserLogin) {
-//         next()
-//     } else {
-//         next('login')
-//     }
-// }
-
-export default new Router({
+const router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [{
@@ -26,24 +18,34 @@ export default new Router({
         {
             path: '/signup/confirmation_email',
             name: 'confirm_email',
-            component: () => import('@/views/Confirm_email.vue')
+            component: () => import('@/views/Confirm_email.vue'),
+            meta: {
+                guest: true
+            }
         },
         {
             path: '/signup/confirmation_phone',
             name: 'confirm_phone',
-            component: () => import('@/views/Confirm_phone.vue')
+            component: () => import('@/views/Confirm_phone.vue'),
+            meta: {
+                guest: true
+            }
         },
         {
             path: '/dashboard',
             name: 'dashboard',
-            // beforeEnter: isAuthenticated,
-            component: () => import('@/views/Dashboard')
+            component: () => import('@/views/Dashboard'),
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/dashboard/app',
             name: 'apps',
-            // beforeEnter: isAuthenticated,
-            component: () => import('@/views/Application')
+            component: () => import('@/views/Application'),
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/login',
@@ -56,3 +58,35 @@ export default new Router({
         }
     ]
 })
+
+// route guard
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (localStorage.getItem('user-token') == null && !store.state.isLoggedIn) {
+            next({
+                path: '/login',
+                params: {
+                    nextUrl: to.fullPath
+                }
+            })
+        } else {
+            next()
+        }
+    } else if (to.matched.some(record => record.meta.guest)) {
+        console.log(router.options.routes[0].path)
+        next()
+    } else {
+        next()
+    }
+})
+router.beforeResolve((to, from, next) => {
+    if (to.name) {
+        NProgress.start()
+    }
+    next()
+})
+router.afterEach((to, from) => {
+    NProgress.done()
+})
+
+export default router;
