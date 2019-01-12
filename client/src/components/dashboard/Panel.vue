@@ -5,7 +5,7 @@
         <p @click="logout">Logout</p>
       </div>
       <div class="profile_img">
-        <img src="../../../public/profile-icon-png-898.png" alt="profile_image">
+        <img v-bind:src=this.user.photo alt="profile_image">
       </div>
       <p class="name">{{ this.user.first_name }} {{ this.user.last_name }}</p>
     </div>
@@ -111,6 +111,7 @@ export default {
   width: 200px;
   height: calc(100vh - 65px);
   background: #d8d5d5;
+  position: fixed;
 }
 .panel > * {
   width: 100%;

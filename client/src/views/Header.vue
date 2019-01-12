@@ -40,7 +40,8 @@ header {
   padding: 0.5rem 0;
   display: flex;
   align-items: center;
-  position: relative;
+  width: 100%;
+  position: fixed;
   top: 0;
   box-sizing: border-box;
 }

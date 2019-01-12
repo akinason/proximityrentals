@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Api from '@/services/Api'
+import { http } from '@/services/http'
 import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
@@ -17,7 +17,7 @@ export default new Vuex.Store({
     setToken(state, token) {
       state.token = token
       if (token) {
-        Api().defaults.headers.common['Authorization'] = `Token ${token}`
+        http.defaults.headers.common['Authorization'] = `Token ${token}`
         state.isLoggedIn = true
       } else {
         state.isLoggedIn = false
@@ -33,7 +33,7 @@ export default new Vuex.Store({
       state.user = null
       localStorage.removeItem('user-token')
       localStorage.removeItem('vuex')
-      delete Api().defaults.headers.common['Authorization']
+      delete http.defaults.headers.common['Authorization']
     },
     createApp(state, apps) {
       state.apps = apps

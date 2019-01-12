@@ -22,13 +22,13 @@
             <table>
               <thead>
                 <th>Application Name</th>
-                <th>Created on</th>
-                <th>Is_Active</th>
+                <th>Key</th>
+                <th>Active</th>
               </thead>
               <tbody>
                 <tr v-for="app in apps" :key="app.id" @click="navigateTo(app.id)">
                   <td>{{ app.name }}</td>
-                  <td>{{ app.created_on }}</td>
+                  <td>{{ app.key }}</td>
                   <td>{{ app.is_active }}</td>
                 </tr>
               </tbody>
@@ -67,7 +67,7 @@ export default {
     async registerApp() {
       try {
         await APIService.createApp({ name: this.name }).then(() => {
-          this.$router.push({ name: 'login' })
+          this.$router.go(this.$router.currentRoute)
         }).catch(err => {
           this.feedback = err.response.data
         });
@@ -96,6 +96,7 @@ export default {
 .dash_layout {
   width: 100%;
   background: var(--white);
+  margin-left: 200px;
 }
 .dashboard {
   display: flex;
@@ -184,17 +185,17 @@ export default {
   transition: all linear 0.5s;
 }
 /* table style */
-.display table {
-  width: 100%;
+display table {
+  min-width: 100%;
 }
 .display table thead {
   border-collapse: collapse;
-  width: 100%;
+  min-width: 100%;
   display: flex;
 }
 .display table thead > * {
   flex-grow: 1;
-  width: 50%;
+  min-width: 50%;
 }
 .display table th {
   text-align: center;
@@ -210,7 +211,7 @@ export default {
 }
 .display table tbody tr > * {
   flex-grow: 1;
-  width: 50%;
+  min-width: 50%;
 }
 .display table td {
   text-align: center;
@@ -235,6 +236,7 @@ form .red-text {
 ul {
   list-style: none;
 }
+
 
 /* media query */
 @media only screen and (max-width: 518px) {

@@ -1,35 +1,28 @@
-import Api from './Api';
+import { http } from './http';
 
-const APiheaders = {
-    headers: {
-        'Content-Type': 'application/json',
-        // 'Access-Control-Allow-Origin': '*',
-        'API-KEY': 'rx6JjqWHcWXt5xLqsUYLJ2nvwbyaGKFyfYTUPn3xq36U7GqALz',
-    }
-}
 
 export default {
     login(credentials) {
-        return Api().post('v1/main/login/', credentials, APiheaders)
+        return http.post('v1/main/login/', credentials )
     },
-    register(data) {
-        return Api().post('v1/main/users/', data, APiheaders)
+    register(params) {
+        return http.post('v1/main/users/', params )
     },
-    verifyEmailOrPhone(data) {
-        return Api().post('v1/main/verification/', data, APiheaders)
+    verifyEmailOrPhone(params) {
+        return http.post('v1/main/verification/', params )
     },
-    confirmEmailOrPhoneVerification(data) {
-        return Api().post("v1/main/verification/confirm/", data, APiheaders)
+    confirmEmailOrPhoneVerification(params) {
+        return http.post("v1/main/verification/confirm/", params )
     },
 
     // applications
-    createApp(data) {
-        return Api().post('developer/apps/', data, APiheaders)
+    createApp(params) {
+        return http.post('developer/apps/', params )
     },
     getApps() {
-        return Api().get(`developer/apps/`, APiheaders)
+        return http.get(`developer/apps/` )
     },
     getSingleApp(id) {
-        return Api().get(`developer/app/?id=${id}`, APiheaders)
+        return http.get(`developer/app/?id=${id}`)
     }
 }

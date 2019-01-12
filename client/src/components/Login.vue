@@ -44,8 +44,8 @@ export default {
   data() {
     return {
       feedback: null,
-      username: "vegascedric28@gmail.com",
-      password: "VrichCrich99"
+      username: "kinason42@gmail.com",
+      password: "123456"
     };
   },
   methods: {
@@ -78,6 +78,7 @@ export default {
           }
         });
       } catch (error) {
+       
         // this.feedback = error.response.data.non_field_errors[0];
         const elements = document.querySelector("form").elements;
         Array.from(elements).forEach(() => {
