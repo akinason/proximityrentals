@@ -1,1 +1,1 @@
-# proximity_rentals
+# proximityrentals
